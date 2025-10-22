@@ -18,6 +18,5 @@ form.addEventListener("submit", async (event) => {
     
     const token = await data.json()
     sessionStorage.setItem("token", token.token)
+
 })
-
-

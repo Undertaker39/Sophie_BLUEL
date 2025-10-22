@@ -1,19 +1,25 @@
 let log = document.querySelector(".log")
 let submit = document.querySelector("input[type=submit]")
-let tokens = 0
 
-logstatus()
 
 function logstatus() {
-    if (tokens != 0) {
+    console.log(sessionStorage.length)
+    if (sessionStorage.length = "0") {
+        log.innerHTML = "Login"
+        submit.value = "Se Connecter"
+    }else{
         log.innerHTML = "Logout"
+        log.addEventListener("click", () =>{
+            sessionStorage.clear()
+            logstatus()
+        })
+        log.removeAttribute("href")
         submit.value = "Déconnecter"
+        submit.addEventListener("click", () =>{
+            sessionStorage.clear()
+            logstatus()
+        })
     }
 }
 
-
-function logout (){
-    sessionStorage.removeItem("token")
-    tokens = 0
-    logstatus()
-}
+logstatus()
