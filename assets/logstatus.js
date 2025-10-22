@@ -21,5 +21,3 @@ function logstatus() {
         })
     }
 }
-
-logstatus()
