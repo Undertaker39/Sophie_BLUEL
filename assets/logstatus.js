@@ -1,23 +1,51 @@
-let log = document.querySelector(".log")
-let submit = document.querySelector("input[type=submit]")
+const log = document.querySelector(".log")
+const aside = document.querySelector("aside")
+const edition_mode = document.querySelector(".edition-mode")
+const modif = document.querySelector(".modif")
+const filtres = document.querySelector(".filtres")
 
+logstatus()
 
 function logstatus() {
-    console.log(sessionStorage.length)
-    if (sessionStorage.length = "0") {
-        log.innerHTML = "Login"
-        submit.value = "Se Connecter"
+    if (!sessionStorage.token) {
+
     }else{
-        log.innerHTML = "Logout"
-        log.addEventListener("click", () =>{
-            sessionStorage.clear()
-            logstatus()
-        })
+        //login/logout//
         log.removeAttribute("href")
-        submit.value = "Déconnecter"
-        submit.addEventListener("click", () =>{
+        log.innerHTML = "logout"
+        log.addEventListener("click", (log) =>{
             sessionStorage.clear()
-            logstatus()
+            log.innerHTML = "login"
+            log.setAttribute("href", "login.html")
         })
+        //login/logout//
+
+        //top modif//
+        aside.setAttribute("class", "edition-mode")
+        const edition_mode = document.querySelector(".edition-mode")
+        const iem = document.createElement("i");
+        const pem = document.createElement("p");
+        edition_mode.appendChild(iem);
+        edition_mode.appendChild(pem);
+        iem.setAttribute("class", "fa-regular fa-pen-to-square")
+        pem.innerText = "Modif"
+        //top modif//
+
+        //modif//
+        const im = document.createElement("i");
+        const pm = document.createElement("p");
+        modif.appendChild(im);
+        modif.appendChild(pm);
+        im.setAttribute("class", "fa-regular fa-pen-to-square")
+        pm.innerText = "modifier"
+        modif.addEventListener("click", () =>{
+            console.log("modale")
+        })
+        EventTarget.
+        //modif//
+
+        //filtres//
+
+        //filtres//
     }
 }

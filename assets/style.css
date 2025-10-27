@@ -49,6 +49,7 @@ table {
 
 /** end reset css**/
 
+
 body {
 	max-width: 1140px;
 	margin:auto;
@@ -161,10 +162,19 @@ a{
 
 /*portfolio*/
 
-#portfolio h2 {
+#portfolio .titre-projet {
+	height: 60px;
+	display: flex;
+	flex-direction: column;
+}
+
+#portfolio .titre-projet h2 {
 	text-align: center;
 	margin-bottom: 1em;
+	align-items: center;
+	width: 100%;
 }
+
 .gallery {
 	width: 100%;
 	display: grid;
@@ -172,6 +182,7 @@ a{
 	grid-column-gap: 20px;
 	grid-row-gap: 20px;
 }
+
 .gallery img {
 	width: 100%;
 
@@ -227,4 +238,50 @@ footer nav ul {
 	display: flex;
 	justify-content: flex-end;
 	margin: 2em
+}
+
+
+/* logstatus on*/
+
+.edition-mode {
+	font-family: 'Work Sans' ;
+	font-size: 16px;
+	font-weight: 400;
+	width: 100%;
+	height: 50px;
+	background-color: black;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;	
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+
+.edition-mode i {
+	margin: 0 5px;
+	color: white;
+}
+
+.edition-mode p{
+	margin: 0 5px;
+	color: white;
+}
+
+.titre-projet div {
+	display: flex;
+	justify-content: center;
+}
+
+.modif {
+	font-family: 'Work Sans' ;
+	font-size: 16px;
+	font-weight: 400;
+	width: fit-content;
+	display: flex;
+	flex-direction: row;
+	position: relative;
+	bottom: 50px;
+	left: 150px;
 }
