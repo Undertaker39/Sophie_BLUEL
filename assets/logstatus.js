@@ -101,6 +101,26 @@ function modale_js () {
     const contenu = document.createElement("section")
     contenu.setAttribute("class","modal-content")
     modal.appendChild(contenu)
+    GetWorks()
+    
+    async function GetWorks() {
+    const response = await fetch("http://localhost:5678/api/works")
+    const works = await response.json()
+ 
+        works.forEach(work => {
+            const figure = document.createElement("figure");
+            const img = document.createElement("img");
+            const remove = document.createElement("i");
+            remove.setAttribute("class","fa-solid fa-trash-can")
+            contenu.appendChild(figure);
+            figure.appendChild(img);
+            figure.appendChild(remove);
+            img.src = work.imageUrl;
+            img.alt = work.title;
+            remove.addEventListener("click",() =>{console.log ("delete")})
+
+        });
+    }
     //contenu//
 
     //hr//
@@ -114,6 +134,7 @@ function modale_js () {
     button.setAttribute("type","submit")
     button.setAttribute("value","Ajouter une photo")
     modal.appendChild(button)
+    button.addEventListener("click", () =>{console.log("add")})
 
     //bouton//
 }
