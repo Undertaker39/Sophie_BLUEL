@@ -8,6 +8,7 @@ async function GetWorks() {
         const figure = document.createElement("figure");
         const img = document.createElement("img");
         const figcaption = document.createElement("figcaption");
+        figure.setAttribute("class","work"+work.id)
         gallery.appendChild(figure);
         figure.appendChild(img);
         figure.appendChild(figcaption);

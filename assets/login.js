@@ -1,6 +1,7 @@
 const form = document.querySelector("form")
 let email = document.getElementById("email")
 let password = document.getElementById("password")
+const error = document.querySelector(".error")
 
 
 form.addEventListener("submit", async (event) => {
@@ -18,5 +19,9 @@ form.addEventListener("submit", async (event) => {
     
     const token = await data.json()
     sessionStorage.setItem("token", token.token)
-    window.location.href = "index.html"
+    if (token.token === undefined || token.token === null || !sessionStorage.token) {
+        error.innerHTML ="Votre adresse e-mail ou votre mot de passe sont erronés"
+    } else {
+        window.location.href = "index.html"
+    }
 })
