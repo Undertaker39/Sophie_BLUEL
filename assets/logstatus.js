@@ -3,6 +3,80 @@ const edition_mode = document.querySelector(".edition-mode")
 const modale = document.getElementById("modale")
 const modif = document.querySelector(".modif")
 const filtres = document.querySelector(".filtres")
+const portfolio = document.getElementById("portfolio")
+
+
+GetFiltres()
+
+async function GetFiltres() {
+    const filter = document.createElement("div")
+    filter.setAttribute("class","filtres")
+    portfolio.appendChild(filter)
+    const buttonAll = document.createElement("button");
+    buttonAll.setAttribute("class","filtre0")
+    buttonAll.innerText = "Tous"
+    filter.appendChild(buttonAll)
+    buttonAll.classList.add('active')
+
+    buttonAll.addEventListener("click",() =>{
+        const buttons = document.querySelectorAll(".filtres button")
+        buttons.forEach(btn => btn.classList.remove('active'))
+        buttonAll.classList.add("active")
+        const images = document.querySelectorAll('.gallery figure')
+        images.forEach(img => img.style.display = 'block')
+    })
+
+    const response = await fetch("http://localhost:5678/api/categories")
+    const filtres = await response.json()
+
+    filtres.forEach(filtre =>{
+        const button = document.createElement("button");
+        button.setAttribute("class","filtre"+filtre.id)
+        button.innerText = filtre.name
+        filter.appendChild(button)
+
+        button.addEventListener("click",() =>{
+            const buttons = document.querySelectorAll(".filtres button")
+            buttons.forEach(btn => btn.classList.remove('active'))
+            button.classList.add("active")
+            const figure =document.querySelectorAll(".gallery figure")
+            console.log(figure)
+            figure.forEach(img => {
+                if (filtre.id === parseInt(img.getAttribute('data-category'))){
+                    img.style.display = 'block'
+                    console.log(parseInt(img.getAttribute('data-category')))
+                }else{
+                    img.style.display = 'none'
+                }
+            })
+        })
+    })
+}
+
+
+GetImages()
+
+async function GetImages() {
+    const gallery = document.createElement("div")
+    gallery.setAttribute("class","gallery")
+    portfolio.appendChild(gallery)
+    const response = await fetch("http://localhost:5678/api/works")
+    const works = await response.json()
+ 
+    works.forEach(work => {
+        const figure = document.createElement("figure");
+        const img = document.createElement("img");
+        const figcaption = document.createElement("figcaption");
+        figure.setAttribute("class","work"+work.id)
+        gallery.appendChild(figure);
+        figure.appendChild(img);
+        figure.appendChild(figcaption);
+        img.src = work.imageUrl;
+        img.alt = work.title;
+        figcaption.innerText = work.title;
+    });
+}
+
 
 logstatus()
 
@@ -13,10 +87,13 @@ function logstatus() {
         //login/logout//
         log.removeAttribute("href")
         log.innerHTML = "logout"
-        log.addEventListener("click", () =>{
+        log.addEventListener("click", (e) =>{
+            e.preventDefault()
             sessionStorage.clear()
             log.innerHTML = "login"
             log.setAttribute("href", "login.html")
+            document.querySelector(".filtres").removeAttribute("style")
+            document.location.reload()
         })
         //login/logout//
 
@@ -46,11 +123,8 @@ function logstatus() {
         })
         //modif//
 
-        //modale//
-        //modale//
-        
         //filtres//
-        
+        document.querySelector(".filtres").setAttribute("style","display: none")
         //filtres//
     }
 }
@@ -103,14 +177,15 @@ function modale_js () {
     const contenu = document.createElement("section")
     contenu.setAttribute("class","modal-content")
     modal.appendChild(contenu)
-    const divwork = document.createElement("div")
-    divwork.setAttribute("class","divwork")
-    contenu.appendChild(divwork)
     GetWorks()
-    
+
     async function GetWorks() {
-    const response = await fetch("http://localhost:5678/api/works")
-    const works = await response.json()
+        const divwork = document.createElement("div")
+        divwork.setAttribute("class","divwork")
+        contenu.appendChild(divwork)
+        divworks = divwork
+        const response = await fetch("http://localhost:5678/api/works")
+        const works = await response.json()
  
         works.forEach(work => {
             const figure = document.createElement("figure");
@@ -134,6 +209,8 @@ function modale_js () {
                 )
                 const data = await deleteWork.status
                 figure.remove()
+                document.querySelector(".gallery").remove()
+                GetImages()
             }
         });
     }
@@ -152,10 +229,8 @@ function modale_js () {
     button.setAttribute("value","Ajouter une photo")
     modal.appendChild(button)
     button.addEventListener("click", () =>{
-        if (divwork.style.display === "none"){
-
-        }else{
-        AddWorks()
+        if (document.querySelector(".divwork") != null){
+            AddWorks()
         }
     })
 
@@ -166,19 +241,23 @@ function modale_js () {
         let imgcat = 0
 
         previous.style.display = ""
-        previous.addEventListener ("click", () =>{
+        previous.addEventListener ("click", f_previous)
+        
+        function f_previous(){
             titre.innerHTML="Galerie photo"
             previous.style.display = "none"
-            divwork.removeAttribute("style")
+            GetWorks()
             divadd.remove()
             button.setAttribute("value","Ajouter une photo")
             button.removeAttribute("style")
             imgadd = 0
             imgtitre = 0
             imgcat = 0
-        })
+            previous.removeEventListener ("click", f_previous)
+        }
+
         titre.innerHTML ="Ajout photo"
-        divwork.setAttribute("style","display : none")
+        document.querySelector(".divwork").remove()
         const divadd = document.createElement("div")
         divadd.setAttribute("class","divadd")
         contenu.appendChild(divadd)
@@ -218,7 +297,7 @@ function modale_js () {
             buttonaddlabel.setAttribute("style","display : none")
             buttonadd.setAttribute("style","display : none")
             p.setAttribute("style","display : none")
-            imgadd = file.name + ";type=" + file.type
+            imgadd = file
             PostButton()
 
             reader.addEventListener("load", () => {
@@ -283,7 +362,6 @@ function modale_js () {
                     option.innerHTML=data.name
                 })
         }
-
         //categorie//
 
         //bouton//
@@ -303,23 +381,23 @@ function modale_js () {
         }
         
         async function PostImg() {
-            const newimage = {
-                title: imgtitre,
-                imageUrl: imgadd,
-                categoryId: imgcat,
-            }
-            const img = JSON.stringify(newimage)
+            const formData = new FormData();
+            formData.append("title", imgtitre);
+            formData.append("category", imgcat);
+            formData.append("image", imgadd);
             const data = await fetch("http://localhost:5678/api/works",
                 {
                     method: "POST",
-                    headers: { "Content-type": "multipart/form-data" },
-                    body: img
+                    headers: {"Authorization": 'Bearer ' + sessionStorage.token},
+                    body: formData
                 })
             const datastatus = await data.status
             console.log(datastatus)
 
-            if(datastatus === 401){
-               reset()
+            if(datastatus === 201){
+                document.querySelector(".gallery").remove()
+                GetImages()
+                reset()
             }
         }
 
@@ -334,12 +412,11 @@ function modale_js () {
             titreinput.value =""
             catselect.value=optiondefault.value
             preview.removeAttribute("src")
-            buttonadd.files[0] = ""
+            buttonadd.value=''
             PostButton()
         }
 
     }
     //bouton//
 }
-
 //modale//
