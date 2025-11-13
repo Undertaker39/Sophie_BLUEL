@@ -40,7 +40,6 @@ async function GetFiltres() {
             buttons.forEach(btn => btn.classList.remove('active'))
             button.classList.add("active")
             const figure =document.querySelectorAll(".gallery figure")
-            console.log(figure)
             figure.forEach(img => {
                 if (filtre.id === parseInt(img.getAttribute('data-category-id'))){
                     img.style.display = 'block'
@@ -393,7 +392,6 @@ function modale_js () {
                     body: formData
                 })
             const datastatus = await data.status
-            console.log(datastatus)
 
             if(datastatus === 201){
                 document.querySelector(".gallery").remove()
